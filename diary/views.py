@@ -4,7 +4,9 @@ from django.views import generic
 from django.contrib import messages
 
 from .forms import InquiryForm, DiaryCreateForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+from django.shortcuts import get_object_or_404
 
 from .models import Diary
 
@@ -88,3 +90,12 @@ class DiaryDeleteView(LoginRequiredMixin, generic.DeleteView):
     def delete(self, request, *args, **kwargs):
         # messages.success(self.request, "日記を削除しました。")
         return super().delete(request, *args, **kwargs)
+
+
+class OnlyYouMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        diary = get_object_or_404(Diary, pk=self.kwargs['pk'])
+        return self.request.user == diary.user
+
