@@ -1,5 +1,6 @@
 from accounts.models import CustomUser
 from django.db import models
+from django.utils import timezone
 
 
 class Diary(models.Model):
@@ -17,3 +18,7 @@ class Diary(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        self.updated_at = timezone.now()
+        super(Diary, self).save(*args, **kwargs)
