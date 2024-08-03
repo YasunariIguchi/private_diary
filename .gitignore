@@ -3,3 +3,4 @@ __pycache__/
 .env
 .idea/
 media/
+venv_private_diary/
