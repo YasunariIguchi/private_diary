@@ -53,8 +53,22 @@ class TestDiaryCreateView(LoggedInTestCase):
         # 新規日記作成処理(Post)を実行
         response = self.client.post(reverse_lazy('diary:diary_create'))
 
+        # レスポンスステータスコードが200であることを確認
+        self.assertEqual(response.status_code, 200)
+
+        # レスポンスコンテキストにフォームが含まれていることを確認
+        self.assertIn('form', response.context)
+
+        # レスポンスコンテキストからフォームを取得
+        form = response.context['form']
+
+        # フォームにエラーがあり、バリデーションに失敗していることを確認
+        self.assertTrue(form.errors)
+        self.assertFalse(form.is_valid())
+
         # 必須フォームフィールドが未入力によりエラーになることを検証
-        self.assertFormError(response, 'form', 'title', 'このフィールドは必須です。')
+        # self.assertFormError(response, 'form', 'title', 'このフィールドは必須です。')
+        self.assertFormError(form, 'title', 'このフィールドは必須です。')
 
 
 class TestDiaryUpdateView(LoggedInTestCase):
